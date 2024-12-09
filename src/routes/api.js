@@ -6,11 +6,17 @@ const router = express.Router();
 const DATA_FILE = path.join(__dirname, "../data/dummy.json");
 
 // Get all data
+
 router.get("/", (req, res) => {
+  console.log("hello")
   try {
     const data = JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
-    res.json(data);
+    console.log(data);
+    console.log("coming",res)
+    return res.status(200).send(data);
   } catch (error) {
+
+    console.log(error)
     if (error.code === "ENOENT") {
       res.status(404).json({ error: "Data file not found" });
     } else {
@@ -24,12 +30,16 @@ router.get("/", (req, res) => {
 router.get("/filter", (req, res) => {
   try {
     const { userId, sortBy } = req.query;
+    console.log(sortBy);
+    console.log(userId);
+
     let data = JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
 
-    // Filter by userId
     if (userId) {
-      data = data.filter((item) => item.userId == userId);
+      data = data.filter((item) => item.id === userId);
+      console.log(data);
     }
+    
 
     // Sort by specified field
     if (sortBy) {
